@@ -1,0 +1,58 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <ctime>
+#include <cstdlib>
+
+void generateRandomNumber(std::vector<int>& number) {
+    std::srand(std::time(0));
+    number.clear();
+    while (number.size() < 4) {
+        int digit = std::rand() % 10;
+        if (std::find(number.begin(), number.end(), digit) == number.end()) {
+            number.push_back(digit);
+        }
+    }
+}
+
+void getInput(std::vector<int>& guess) {
+    guess.clear();
+    std::string input;
+    std::cin >> input;
+    for (char c : input) {
+        guess.push_back(c - '0');
+    }
+}
+
+void evaluateGuess(const std::vector<int>& number, const std::vector<int>& guess, int& strikes, int& balls) {
+    strikes = 0;
+    balls = 0;
+    for (int i = 0; i < 4; ++i) {
+        if (guess[i] == number[i]) {
+            strikes++;
+        } else if (std::find(number.begin(), number.end(), guess[i]) != number.end()) {
+            balls++;
+        }
+    }
+}
+
+int main() {
+    std::vector<int> number;
+    std::vector<int> guess;
+    int strikes = 0, balls = 0;
+
+    generateRandomNumber(number);
+
+    std::cout << "Welcome to Number Baseball! Guess the 4-digit number." << std::endl;
+
+    while (strikes < 4) {
+        std::cout << "Enter your guess: ";
+        getInput(guess);
+        evaluateGuess(number, guess, strikes, balls);
+        std::cout << "Strikes: " << strikes << ", Balls: " << balls << std::endl;
+    }
+
+    std::cout << "Congratulations! You've guessed the number!" << std::endl;
+
+    return 0;
+}
